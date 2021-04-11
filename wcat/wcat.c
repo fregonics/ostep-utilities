@@ -25,6 +25,7 @@ int validate_input(int argc, char **argv) {
 }
 
 int is_absolute_path(char *str) {
+	
 	if(str[0] == '/') {
 		return 1;
 	}
@@ -32,23 +33,35 @@ int is_absolute_path(char *str) {
 	return 0;
 }
 
-void read_content(char *filename) {
-	
+char *format_file_path(char *filename) {
 	char *path;
 
 	if(is_absolute_path(filename)) {
+	
 		path = filename;
+	
 	} else {
+
 		char *cwd = malloc(DEFAULT_PATH_SIZE * sizeof(char));
-		cwd = getcwd(cwd, DEFAULT_PATH_SIZE);
 		path = malloc(DEFAULT_PATH_SIZE * sizeof(char));
+		
+		cwd = getcwd(cwd, DEFAULT_PATH_SIZE);
+		
 		strcat(path, cwd);
 		strcat(path, "/\0");
 		strcat(path, filename);
+	
 	}
 
+	return path;
+}
 
-	FILE *file = fopen(filename, "r");
+void read_content(char *filename) {
+	
+	char *path = format_file_path(filename);
+	//printf("%s", path);
+
+	FILE *file = fopen(path, "r");
 
 	if (file == NULL) {
 		printf("ERROR: Could not find file: %s\n", filename);
