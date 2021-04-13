@@ -43,7 +43,7 @@ char *format_file_path(char *filename) {
 	} else {
 
 		char *cwd = malloc(DEFAULT_PATH_SIZE * sizeof(char));
-		path = malloc(DEFAULT_PATH_SIZE * sizeof(char));
+		path = calloc(DEFAULT_PATH_SIZE, sizeof(char));
 		
 		cwd = getcwd(cwd, DEFAULT_PATH_SIZE);
 		
@@ -59,8 +59,7 @@ char *format_file_path(char *filename) {
 void read_content(char *filename) {
 	
 	char *path = format_file_path(filename);
-	//printf("%s", path);
-
+	
 	FILE *file = fopen(path, "r");
 
 	if (file == NULL) {
@@ -77,15 +76,20 @@ void read_content(char *filename) {
 	}
 
 	fclose(file);
+	free(path);
 }
 
 int main(int argc, char *argv[]) {
+
+	int i;
 
 	if( !validate_input(argc, argv) ) {
 		return 0;
 	}
 
-	read_content(argv[argc - 1]);
+	for (i = 1; i < argc; i ++) {
+		read_content(argv[i]);	
+	}
 
 	return 0;
 }
