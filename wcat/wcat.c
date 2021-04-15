@@ -16,7 +16,6 @@ long get_file_length(FILE **file) {
 int validate_input(int argc, char **argv) {
 	
 	if(argc < 2) {
-		printf("You must enter a file to be read.\n");
 		return 0;
 	}
 
