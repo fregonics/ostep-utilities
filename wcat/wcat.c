@@ -55,20 +55,21 @@ char *format_file_path(char *filename) {
 	return path;
 }
 
-void read_content(char *filename) {
+int read_content(char *filename) {
 	
 	char *path = format_file_path(filename);
 	
 	FILE *file = fopen(path, "r");
 
 	if (file == NULL) {
-		printf("ERROR: Could not find file: %s\n", filename);
-		return;
+		free(path);
+		printf("wcat: cannot open file\n");
+		return 1;
 	}
 
 	long length = get_file_length(&file);
 
-	char *buffer = malloc(length * sizeof(char));
+	char *buffer = calloc(length, sizeof(char));
 	if (buffer != NULL) {
 		fread(buffer, 1, length, file);
 		printf("%s", buffer);
@@ -76,6 +77,9 @@ void read_content(char *filename) {
 
 	fclose(file);
 	free(path);
+	free(buffer);
+
+	return 0;
 }
 
 int main(int argc, char *argv[]) {
@@ -87,7 +91,8 @@ int main(int argc, char *argv[]) {
 	}
 
 	for (i = 1; i < argc; i ++) {
-		read_content(argv[i]);	
+		if( read_content(argv[i]) == 1 )
+			return 1;	
 	}
 
 	return 0;
